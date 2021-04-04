@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "976108770443",
+    "project_id": "iyaloja-3ac85",
+    "storage_bucket": "iyaloja-3ac85.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976108770443:android:c7e95097e23c3bb163708e",
+        "android_client_info": {
+          "package_name": "com.example.iyaloja"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976108770443-qmslqqs4td8vcakv4ub8bc47gdpkbaeo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSTc8YMjIXuhyoIuAsZqKxXtgEQ3Pz7u0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976108770443-qmslqqs4td8vcakv4ub8bc47gdpkbaeo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
