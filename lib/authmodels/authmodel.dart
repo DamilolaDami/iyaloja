@@ -1,10 +1,14 @@
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:iyaloja/models/models.dart';
 
-class AuthenticationService {
+class AuthenticationService extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth;
-  UserModel userModel = UserModel();
+  UserModel currentUser;
   final userRef = FirebaseFirestore.instance.collection("users");
 
   AuthenticationService(this._firebaseAuth);
@@ -56,7 +60,7 @@ class AuthenticationService {
   //3
   Future<void> addUserToDB(
       {String uid, String username, String email, DateTime timestamp}) async {
-    userModel = UserModel(
+    final userModel = UserModel(
         uid: uid, username: username, email: email, timestamp: timestamp);
 
     await userRef.doc(uid).set(userModel.toMap(userModel));
@@ -75,4 +79,63 @@ class AuthenticationService {
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
+
+  getCurrentUser() async {
+    print('USER IDE IS => ${_firebaseAuth.currentUser.uid}');
+    final user = await getUserFromDB(uid: _firebaseAuth.currentUser.uid);
+    if (user == null) {
+      print('cannot get user at the moment');
+    } else {
+      currentUser = user;
+      print("${currentUser.username}");
+      print("${currentUser.uid}");
+      print("${currentUser.photourl}");
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateImage() async {
+    // Get image from gallery.
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    // _uploadImageToFirebase(image);
+
+    // Future<void> _uploadImageToFirebase(File image) async {
+    try {
+      // Make random image name.
+      int randomNumber = Random().nextInt(100000);
+      String imageLocation = 'images/image$randomNumber.jpg';
+
+      // Upload image to firebase.
+      final storageReference =
+          FirebaseStorage.instanceFor().ref().child(imageLocation);
+      final uploadTask = storageReference.putFile(image);
+      await uploadTask;
+      final url = await storageReference.getDownloadURL();
+
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(currentUser.uid)
+          .update({
+        'photo': url,
+      });
+    } catch (e) {
+      print(e.message);
+    }
+  }
+
+  Future<void> _deleteImage() async {
+    
+  }
+  // Future<void> _addPathToDatabase(String url) async {
+  // try {
+  //   // Get image URL from firebase
+  //   // final ref = FirebaseStorage.instanceFor().ref().child('profile.jpg');
+  //   //var imageString = await ref.getDownloadURL();
+
+  //   // Add location and url to database
+
+  // } catch (e) {
+  //   print(e.message);
+  // }
+  // }
 }
